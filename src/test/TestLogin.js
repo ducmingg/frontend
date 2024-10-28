@@ -5,6 +5,8 @@ export async function runLoginTest(driver) {
     try {
         await testEmptyFields(driver);
         await driver.sleep(2000);
+        await testUserNotExists(driver);
+        await driver.sleep(2000);
 
     } catch (e) {
         console.error("Test execution failed - " + e.message);
@@ -29,3 +31,16 @@ async function testEmptyFields(driver) {
     }
 }
 
+async function testUserNotExists(driver) {
+    await resetLoginForm(driver);
+    try {
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[1]/input")).sendKeys("nonexistentUser");
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[2]/input")).sendKeys("password123");
+        await driver.findElement(By.id('signup')).click();
+        let error = await driver.findElement(By.className('MuiAlert-message')).getText();
+        assert.strictEqual(error, 'User Not Exists!');
+        console.log("Test user not exists: Passed");
+    } catch (e) {
+        console.log("Test user not exists: Failed - " + e.message);
+    }
+}
