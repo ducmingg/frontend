@@ -9,6 +9,8 @@ export async function runTest(driver) {
         await driver.sleep(2000);
         await testInvalidEmail(driver);
         await driver.sleep(2000);
+        await testExistingEmail(driver);
+        await driver.sleep(2000);
 
     } catch (e) {
         console.error("Test execution failed - " + e.message);
@@ -62,5 +64,22 @@ async function testInvalidEmail(driver) {
         console.log("Test invalid email: Passed");
     } catch (e) {
         console.log("Test invalid email: Failed - " + e.message);
+    }
+}
+
+async function testExistingEmail(driver) {
+    await resetForm(driver);
+    try {
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[1]/input")).sendKeys("existingUser");
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[2]/input")).sendKeys("existingemail@example.com");
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[3]/input")).sendKeys("password123");
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[4]/input")).sendKeys("password123");
+        await driver.findElement(By.id('signup')).click();
+        await driver.wait(until.elementLocated(By.className('MuiAlert-message')), 1000);
+        let error = await driver.findElement(By.className('MuiAlert-message')).getText();
+        assert.strictEqual(error, 'Email Already Exist!');
+        console.log("Test existing email: Passed");
+    } catch (e) {
+        console.log("Test existing email: Failed - " + e.message);
     }
 }
