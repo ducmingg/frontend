@@ -7,6 +7,8 @@ export async function runTest(driver) {
         await driver.sleep(2000);
         await testPasswordMismatch(driver);
         await driver.sleep(2000);
+        await testInvalidEmail(driver);
+        await driver.sleep(2000);
 
     } catch (e) {
         console.error("Test execution failed - " + e.message);
@@ -45,5 +47,20 @@ async function testPasswordMismatch(driver) {
     } catch (e) {
         console.log("Test password mismatch: Failed - " + e.message);
     }
+}
 
+async function testInvalidEmail(driver) {
+    await resetForm(driver);
+    try {
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[1]/input")).sendKeys("testuser");
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[2]/input")).sendKeys("invalid-email");
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[3]/input")).sendKeys("password123");
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[4]/input")).sendKeys("password123");
+        await driver.findElement(By.id('signup')).click();
+        let error = await driver.findElement(By.className('MuiAlert-message')).getText();
+        assert.strictEqual(error, 'Please Enter a Vaild Email Address!');
+        console.log("Test invalid email: Passed");
+    } catch (e) {
+        console.log("Test invalid email: Failed - " + e.message);
+    }
 }
