@@ -7,6 +7,8 @@ export async function runLoginTest(driver) {
         await driver.sleep(2000);
         await testUserNotExists(driver);
         await driver.sleep(2000);
+        await testInvalidPassword(driver);
+        await driver.sleep(2000);
 
     } catch (e) {
         console.error("Test execution failed - " + e.message);
@@ -42,5 +44,19 @@ async function testUserNotExists(driver) {
         console.log("Test user not exists: Passed");
     } catch (e) {
         console.log("Test user not exists: Failed - " + e.message);
+    }
+}
+
+async function testInvalidPassword(driver) {
+    await resetLoginForm(driver);
+    try {
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[1]/input")).sendKeys("existingUser");
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[2]/input")).sendKeys("wrongpassword");
+        await driver.findElement(By.id('signup')).click();
+        let error = await driver.findElement(By.className('MuiAlert-message')).getText();
+        assert.strictEqual(error, 'Password Invalid!');
+        console.log("Test invalid password: Passed");
+    } catch (e) {
+        console.log("Test invalid password: Failed - " + e.message);
     }
 }
