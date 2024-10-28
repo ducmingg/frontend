@@ -11,7 +11,8 @@ export async function runLoginTest(driver) {
         await driver.sleep(2000);
         await testAlreadyOnline(driver);
         await driver.sleep(2000);
-
+        await testLoginSuccess(driver);
+        await driver.sleep(5000);
     } catch (e) {
         console.error("Test execution failed - " + e.message);
     }
@@ -74,5 +75,21 @@ async function testAlreadyOnline(driver) {
         console.log("Test already online: Passed");
     } catch (e) {
         console.log("Test already online: Failed - " + e.message);
+    }
+}
+
+async function testLoginSuccess(driver) {
+    await resetLoginForm(driver);
+    try {
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[1]/input")).sendKeys("hihi");
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[2]/input")).sendKeys("hihi");
+        await driver.findElement(By.id('signup')).click();
+
+        await driver.wait(until.urlContains('/'), 2000);
+        let currentUrl = await driver.getCurrentUrl();
+        assert.strictEqual(currentUrl, 'http://localhost:3000/');
+        console.log("Test login success: Passed");
+    } catch (e) {
+        console.log("Test login success: Failed - " + e.message);
     }
 }
