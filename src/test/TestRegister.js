@@ -11,7 +11,8 @@ export async function runTest(driver) {
         await driver.sleep(2000);
         await testExistingEmail(driver);
         await driver.sleep(2000);
-
+        await testRegistrationSuccess(driver);
+        await driver.sleep(2000);
     } catch (e) {
         console.error("Test execution failed - " + e.message);
     }
@@ -81,5 +82,23 @@ async function testExistingEmail(driver) {
         console.log("Test existing email: Passed");
     } catch (e) {
         console.log("Test existing email: Failed - " + e.message);
+    }
+}
+
+async function testRegistrationSuccess(driver) {
+    await resetForm(driver);
+    try {
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[1]/input")).sendKeys("hihi");
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[2]/input")).sendKeys("hihiemail@example.com");
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[3]/input")).sendKeys("hihi");
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[4]/input")).sendKeys("hihi");
+        await driver.findElement(By.id('signup')).click();
+
+        await driver.wait(until.urlContains('/login'), 2000);
+        let currentUrl = await driver.getCurrentUrl();
+        assert.strictEqual(currentUrl, 'http://localhost:3000/login');
+        console.log("Test registration success: Passed");
+    } catch (e) {
+        console.log("Test registration success: Failed - " + e.message);
     }
 }
