@@ -20,6 +20,8 @@ export async function runCreateRoomTest() {
         await driver.sleep(2000);
         await testCreatePublicRoomSuccess(driver);
         await driver.sleep(4000);
+        await testJoinPublicRoom(driver);
+        await driver.sleep(2000);
 
     } catch (e) {
         console.error("Test execution failed - " + e.message);
@@ -125,6 +127,41 @@ async function testCreatePublicRoomSuccess(driver) {
     }
 }
 
+
+async function testJoinPublicRoom(driver) {
+    try {
+        const originalWindow = await driver.getWindowHandle();
+        await driver.executeScript("window.open('about:blank', '_blank');");
+        const windows = await driver.getAllWindowHandles();
+        let heheWindow;
+        for (const handle of windows) {
+            if (handle !== originalWindow) {
+                heheWindow = handle;
+                await driver.switchTo().window(heheWindow);
+                break;
+            }
+        }
+        await driver.get('http://localhost:3000');
+        await driver.sleep(2000);
+        // Step 5: Perform login steps in the new window
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[1]/input")).sendKeys("hehe");
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[2]/input")).sendKeys("hehe");
+        await driver.findElement(By.id('signup')).click();
+        await driver.sleep(3000);
+
+        // nhấn tham gia phòng
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[1]/div[2]/div[3]/ul[1]/div/li/div")).click();
+
+        await driver.wait(until.urlContains('room'), 5000);
+        await driver.sleep(3000);
+        console.log("Test join public room: Passed");
+        await driver.switchTo().window(originalWindow);
+        await driver.sleep(3000);
+        await startGame(driver, heheWindow);
+    } catch (e) {
+        console.log("Test join public room: Failed - " + e.message);
+    }
+}
 
 async function testJoinPrivateRoom(driver, password) {
     try {
