@@ -213,7 +213,19 @@ async function startGame(driver) { // Accept heheWindow as a parameter
         console.log("Test start game: Failed - " + e.message);
     }
 }
-
+async function changeColor(driver) {
+    try {
+        // Locate the color picker element and set the desired color
+        const colorPicker = await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div/div[1]/div")); // Adjust the selector as needed
+        await colorPicker.click();
+        await driver.sleep(2000);
+        const colorOption = await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div/div/div[3]/span[2]/div")); // Adjust the selector based on your color options
+        await colorOption.click();
+        console.log(`Changed color success`);
+    } catch (e) {
+        console.log("Change color failed: " + e.message);
+    }
+}
 async function simulateDrawing(driver, originalWindow) {
     try {
         const originalWindow = await driver.getWindowHandle();
