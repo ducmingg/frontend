@@ -22,6 +22,8 @@ export async function runCreateRoomTest() {
         await driver.sleep(4000);
         await testJoinPublicRoom(driver);
         await driver.sleep(2000);
+        await startGame(driver);
+        await driver.sleep(2000);
 
     } catch (e) {
         console.error("Test execution failed - " + e.message);
@@ -162,7 +164,53 @@ async function testJoinPublicRoom(driver) {
         console.log("Test join public room: Failed - " + e.message);
     }
 }
+async function startGame(driver) { // Accept heheWindow as a parameter
+    try {
+        // Click the "Start Game" button
+        await driver.sleep(2000);
+        let startGameButton = driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div/div/button"));
+        await startGameButton.click();
+        console.log("Test start game: Passed");
+        // Function to handle word selection with timeout
+        async function selectWord(player) {
+            await driver.sleep(2000); // Wait to allow word buttons to appear
+            let wordButtons = await driver.findElements(By.className("option-btn"));
 
+            if (wordButtons.length > 0) {
+                await driver.sleep(10000);  // Wait 10 seconds for selection
+
+                // Check if any word is selected within the timeout
+                let isWordSelected = false;
+                for (let i = 0; i < wordButtons.length; i++) {
+                    try {
+                        if (await wordButtons[i].isDisplayed()) {
+                            await wordButtons[i].click();
+                            isWordSelected = true;
+                            console.log(`${player} selected a word.`);
+                            break;
+                        }
+                    } catch (staleError) {
+                        console.log("Encountered stale element reference, retrying...");
+                        wordButtons = await driver.findElements(By.className("option-btn")); // Re-fetch elements
+                        i = -1; // Reset loop to start from the beginning
+                    }
+                }
+
+                if (!isWordSelected) {
+                    console.log(`Time's up! Passing word selection to another player.`);
+                    return false; // Word was not selected, transfer to next player
+                }
+            } else {
+                console.log("Word selection buttons not found. Switching to participant (hehe) window.");
+                await driver.switchTo().window(heheWindow); // Switch to hehe's window if no words are found
+
+            }
+        }
+    }
+    catch (e) {
+        console.log("Test start game: Failed - " + e.message);
+    }
+}
 async function testJoinPrivateRoom(driver, password) {
     try {
         const originalWindow = await driver.getWindowHandle();
@@ -208,5 +256,4 @@ async function testJoinPrivateRoom(driver, password) {
         console.log("Test join private room: Failed - " + e.message);
     }
 }
-
 runCreateRoomTest();
