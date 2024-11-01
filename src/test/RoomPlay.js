@@ -242,6 +242,24 @@ async function changeBrushSize(driver) {
         console.log("Change brush size failed: " + e.message);
     }
 }
+async function undoLastAction(driver) {
+    try {
+        const undoButton = await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div/div[3]/div")); // Adjust the selector as needed
+        await undoButton.click();
+        console.log("Last action undone passed.");
+    } catch (e) {
+        console.log("Undo failed: " + e.message);
+    }
+}
+async function clearCanvas(driver) {
+    try {
+        const clearButton = await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div/div[4]/div")); // Adjust the selector as needed
+        await clearButton.click();
+        console.log("Canvas cleared passed.");
+    } catch (e) {
+        console.log("Clear canvas failed: " + e.message);
+    }
+}
 async function simulateDrawing(driver, originalWindow) {
     try {
         const originalWindow = await driver.getWindowHandle();
@@ -337,5 +355,4 @@ async function testJoinPrivateRoom(driver, password) {
         console.log("Test join private room: Failed - " + e.message);
     }
 }
-
 runCreateRoomTest();
