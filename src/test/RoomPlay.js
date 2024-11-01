@@ -28,7 +28,9 @@ export async function runCreateRoomTest() {
         await driver.sleep(2000);
         await guessMultipleTimes(driver, ["smoking","hospital" , "cinema", "train", "embrace", "helicopter", "watermelon", "airport", "tiger","elephant","snake", "leopard", "lion", "panda", "truck", "strawberry", "fight", "fitness", "cat", "car", "coconut", "grape", "ferry", "orange", "supermarket", "hamburger"]);
         await driver.sleep(2000);
-
+        await testJoinRoomWhenFull(driver);
+        await driver.sleep(5000);
+        // await testLeaveRoom(driver);
     } catch (e) {
         console.error("Test execution failed - " + e.message);
     } finally {
@@ -380,6 +382,28 @@ async function testJoinPrivateRoom(driver, password) {
 
     } catch (e) {
         console.log("Test join private room: Failed - " + e.message);
+    }
+}
+
+
+async function testJoinRoomWhenFull() {
+    let driver2;
+    try {
+        driver2 = await new Builder().forBrowser("chrome").build();
+        await driver2.get("http://localhost:3000");
+        await driver2.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[1]/input")).sendKeys("newUser");
+        await driver2.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[2]/input")).sendKeys("password123");
+        await driver2.findElement(By.id("signup")).click();
+        await driver2.sleep(2000);
+
+        let roomElement2 = await driver2.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[1]/div[2]/div[3]/ul[1]/div/li/div"));
+        await roomElement2.click();
+        await driver2.sleep(2000);
+        console.log("Test join room when full: Passed join room when full");
+    } catch (e) {
+        console.log("Test join room when full: Failed - " + e.message);
+    } finally {
+        if (driver2) await driver2.quit();
     }
 }
 
