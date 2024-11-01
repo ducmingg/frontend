@@ -16,6 +16,7 @@ export async function runCreateRoomTest() {
         await driver.sleep(2000);  // Optional: Wait for the page to load
         await testCreatePrivateRoomSuccess(driver);
         await driver.sleep(3000);
+        await testJoinPrivateRoom(driver, "password123");
 
     } catch (e) {
         console.error("Test execution failed - " + e.message);
@@ -88,6 +89,52 @@ async function testCreatePrivateRoomSuccess(driver) {
         console.log("Test create private room success: Passed");
     } catch (e) {
         console.log("Test create private room success: Failed - " + e.message);
+    }
+}
+
+async function testJoinPrivateRoom(driver, password) {
+    try {
+        const originalWindow = await driver.getWindowHandle();
+        await driver.executeScript("window.open('about:blank', '_blank');");
+        const windows = await driver.getAllWindowHandles();
+        let newWindow;
+        for (const handle of windows) {
+            if (handle !== originalWindow) {
+                newWindow = handle;
+                await driver.switchTo().window(newWindow);
+                break;
+            }
+        }
+        await driver.get('http://localhost:3000');
+        await driver.sleep(2000);
+
+        // Perform login in the new window
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[1]/input")).sendKeys("haha");
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[2]/div[2]/input")).sendKeys("haha");
+        await driver.findElement(By.id("signup")).click();
+        await driver.sleep(5000);
+
+        // Click to join the private room
+        await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/header/div/div[1]/div[2]/div[3]/ul/li/div")).click();
+        await driver.sleep(2000);
+
+        // Enter the room password
+        await driver.findElement(By.xpath("/html/body/div[2]/div[3]/div/div[2]/input")).sendKeys(password);
+
+        // Click the 'Enter' button in the password dialog
+        await driver.findElement(By.xpath("/html/body/div[2]/div[3]/div/div[3]/button[2]/span[1]")).click();
+
+        // Wait for confirmation that the room has been joined
+        await driver.wait(until.urlContains('room'), 5000);
+        console.log("Test join private room: Passed");
+        await driver.switchTo().window(originalWindow);
+        await driver.sleep(2000);
+
+        // await driver.switchTo().window(originalWindow);
+        await driver.sleep(5000);
+
+    } catch (e) {
+        console.log("Test join private room: Failed - " + e.message);
     }
 }
 
