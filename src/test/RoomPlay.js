@@ -17,7 +17,7 @@ export async function runCreateRoomTest() {
         await testCreatePrivateRoomSuccess(driver);
         await driver.sleep(3000);
         await testJoinPrivateRoom(driver, "password123");
-        await driver.sleep(2000);
+        await driver.sleep(3000);
         await testCreatePublicRoomSuccess(driver);
         await driver.sleep(4000);
         await testJoinPublicRoom(driver);
@@ -25,6 +25,8 @@ export async function runCreateRoomTest() {
         await startGame(driver);
         await driver.sleep(2000);
         await simulateDrawing(driver, "Test word", "TestUser");
+        await driver.sleep(2000);
+        await guessMultipleTimes(driver, ["smoking","hospital" , "cinema", "train", "embrace", "helicopter", "watermelon", "airport", "tiger","elephant","snake", "leopard", "lion", "panda", "truck", "strawberry", "fight", "fitness", "cat", "car", "coconut", "grape", "ferry", "orange", "supermarket", "hamburger"]);
         await driver.sleep(2000);
 
     } catch (e) {
@@ -310,6 +312,31 @@ async function simulateDrawing(driver, originalWindow) {
     }
 }
 
+async function guessMultipleTimes(driver, wordList) {
+    try {
+
+        const guessInput = await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/div/div/div/div[2]/div[2]/div[2]/div/div[2]/input")); // Adjust the selector for the guess input field
+
+        for (const word of wordList) {
+            await guessInput.clear(); // Clear input before each guess
+            await guessInput.sendKeys(word, Key.RETURN); // Enter each guessed word
+            await driver.sleep(1000); // Small delay between guesses
+            console.log(`Tried guessing the word "${word}"`);
+
+            console.log("Multiple guesses completed.");
+            const indicators = await driver.findElements(By.className("text")); // Adjust class to actual success element
+            if (indicators.length > 0 && await !indicators[0].isDisplayed()) {
+                console.log(`Correct guess found with word "${word}". Stopping further guesses.`);
+                break;
+            }
+
+
+            console.log(`Word "${word}" was incorrect, continuing to the next guess.`);
+        }
+    } catch (e) {
+        console.log("Guessing word failed: " + e.message);
+    }
+}
 async function testJoinPrivateRoom(driver, password) {
     try {
         const originalWindow = await driver.getWindowHandle();
@@ -355,4 +382,6 @@ async function testJoinPrivateRoom(driver, password) {
         console.log("Test join private room: Failed - " + e.message);
     }
 }
+
+///////////////////////
 runCreateRoomTest();
