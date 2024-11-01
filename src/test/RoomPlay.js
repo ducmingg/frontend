@@ -226,6 +226,22 @@ async function changeColor(driver) {
         console.log("Change color failed: " + e.message);
     }
 }
+async function changeBrushSize(driver) {
+    try {
+        const brushSizeSlider = await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div/div[2]/div")); // Adjust the selector as needed
+        await brushSizeSlider.click();
+        await driver.sleep(2000);
+        let brushSizeOption = await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div[1]/div/span/span[23]"));
+        let action = driver.actions();
+        await driver.sleep(2000);
+        await action.move().dragAndDrop(brushSizeOption, { x: 30, y: 0 }).perform();
+        await driver.sleep(2000);
+
+        console.log(`Changed brush size to passed`);
+    } catch (e) {
+        console.log("Change brush size failed: " + e.message);
+    }
+}
 async function simulateDrawing(driver, originalWindow) {
     try {
         const originalWindow = await driver.getWindowHandle();
