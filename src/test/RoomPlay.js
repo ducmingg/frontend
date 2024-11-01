@@ -14,6 +14,8 @@ export async function runCreateRoomTest() {
         await driver.sleep(2000);
         await testCreatePrivateRoomNoPassword(driver);
         await driver.sleep(2000);  // Optional: Wait for the page to load
+        await testCreatePrivateRoomSuccess(driver);
+        await driver.sleep(3000);
 
     } catch (e) {
         console.error("Test execution failed - " + e.message);
@@ -57,6 +59,35 @@ async function testCreatePrivateRoomNoPassword(driver) {
         console.log("Test create private room no password: Passed");
     } catch (e) {
         console.log("Test create private room no password: Failed - " + e.message);
+    }
+}
+
+async function testCreatePrivateRoomSuccess(driver) {
+    await resetCreateRoomForm(driver);  // Reset the form state
+    try {
+        await driver.findElement(By.xpath("/html/body/div[2]/div[3]/div/div[2]/div[1]/div/input")).sendKeys("Private Room");
+        await driver.findElement(By.xpath("/html/body/div[2]/div[3]/div/div[2]/div[3]/label[2]/span[1]/span[1]/input")).click();
+        await driver.findElement(By.xpath("//*[@id=\"password\"]")).sendKeys("password123");
+
+        let playersSlider = await driver.findElement(By.xpath("/html/body/div[2]/div[3]/div/div[2]/span[1]/span[21]"));
+        let action = driver.actions();
+        await driver.sleep(2000);
+        await action.move().dragAndDrop(playersSlider, { x: 160, y: 0 }).perform();
+        await driver.sleep(4000);
+
+// Select the number of rounds
+        let roundsSlider = await driver.findElement(By.xpath("/html/body/div[2]/div[3]/div/div[2]/span[2]/span[13]"));
+        action = driver.actions();  // Reinitialize the action object
+        await driver.sleep(2000);
+        await action.move().dragAndDrop(roundsSlider, { x: 80, y: 0 }).perform();
+        await driver.sleep(4000);
+
+        await driver.sleep(3000);
+        let createButton = await driver.findElement(By.xpath("/html/body/div[2]/div[3]/div/div[3]/button[2]/span[2]"));
+        await driver.executeScript("arguments[0].click();", createButton);
+        console.log("Test create private room success: Passed");
+    } catch (e) {
+        console.log("Test create private room success: Failed - " + e.message);
     }
 }
 
