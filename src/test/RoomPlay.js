@@ -24,6 +24,8 @@ export async function runCreateRoomTest() {
         await driver.sleep(2000);
         await startGame(driver);
         await driver.sleep(2000);
+        await simulateDrawing(driver, "Test word", "TestUser");
+        await driver.sleep(2000);
 
     } catch (e) {
         console.error("Test execution failed - " + e.message);
@@ -211,6 +213,57 @@ async function startGame(driver) { // Accept heheWindow as a parameter
         console.log("Test start game: Failed - " + e.message);
     }
 }
+
+async function simulateDrawing(driver, originalWindow) {
+    try {
+        const originalWindow = await driver.getWindowHandle();
+        // Giữ lại cửa sổ của người tham gia (không phải người tạo)
+        const windows = await driver.getAllWindowHandles();
+        let heheWindow;
+        for (const handle of windows) {
+            if (handle !== originalWindow) {
+                heheWindow = handle;
+                break;
+            }
+        }
+
+        console.log("Participant window handle: " + heheWindow);
+        console.log("Original window handle: " + originalWindow);
+
+        await driver.wait(until.elementLocated(By.xpath("//*[@id=\"root\"]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div[1]")), 5000);
+        const canvas = await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div[1]"));
+        const actions = driver.actions();
+        await driver.sleep(2000);
+        await changeColor(driver);
+        await driver.sleep(2000);
+        await changeBrushSize(driver);
+
+        // Simulate a drawing action
+        await actions.move({ origin: canvas, x: 50, y: 50 }).press().perform(); // Start at a point on the canvas
+        await actions.move({ origin: canvas, x: 150, y: 50 }).perform(); // Draw to the right
+        await actions.move({ origin: canvas, x: 150, y: 150 }).perform(); // Draw downwards
+        await driver.sleep(2000);
+        await undoLastAction(driver);
+        await driver.sleep(2000);
+        await actions.move({ origin: canvas, x: 50, y: 150 }).perform(); // Draw to the left
+        await actions.move({ origin: canvas, x: 50, y: 50 }).release().perform(); // Complete the drawing
+        await clearCanvas(driver);
+        await actions.move({ origin: canvas, x: 50, y: 50 }).press().perform(); // Start at a point on the canvas
+        await driver.sleep(2000);
+        await actions.move({ origin: canvas, x: 150, y: 50 }).perform(); // Draw to the right
+        await driver.sleep(2000);
+        await actions.move({ origin: canvas, x: 150, y: 150 }).perform(); // Draw downwards
+        await driver.sleep(2000);
+        await actions.move({ origin: canvas, x: 50, y: 50 }).release().perform();
+        console.log("Test simulate drawing: Passed");
+        // Chuyển sang cửa sổ người tham gia để đoán từ
+        await driver.switchTo().window(heheWindow);
+        await driver.sleep(2000);
+    } catch (e) {
+        console.log("Test simulate drawing: Failed - " + e.message);
+    }
+}
+
 async function testJoinPrivateRoom(driver, password) {
     try {
         const originalWindow = await driver.getWindowHandle();
@@ -256,4 +309,5 @@ async function testJoinPrivateRoom(driver, password) {
         console.log("Test join private room: Failed - " + e.message);
     }
 }
+
 runCreateRoomTest();
