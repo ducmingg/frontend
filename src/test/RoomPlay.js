@@ -30,7 +30,7 @@ export async function runCreateRoomTest() {
         await driver.sleep(2000);
         await testJoinRoomWhenFull(driver);
         await driver.sleep(5000);
-        // await testLeaveRoom(driver);
+        await testLeaveRoom(driver);
     } catch (e) {
         console.error("Test execution failed - " + e.message);
     } finally {
@@ -385,6 +385,25 @@ async function testJoinPrivateRoom(driver, password) {
     }
 }
 
+async function testLeaveRoom(driver) {
+    try {
+        // Tìm và nhấn nút "Rời khỏi phòng"
+        // Giả sử nút rời khỏi phòng có XPath cụ thể, bạn có thể cần thay thế XPath này tùy theo cấu trúc DOM của ứng dụng
+        let leaveButton = await driver.findElement(By.xpath("//*[@id=\"root\"]/div/div/div/div/div/div[1]/div/div"));
+
+        // Thực hiện thao tác nhấn vào nút rời khỏi phòng
+        await driver.executeScript("arguments[0].click();", leaveButton);
+
+        // Đợi một thời gian ngắn để đảm bảo người dùng đã rời khỏi phòng
+        await driver.sleep(2000);
+
+        await driver.wait(until.urlIs("http://localhost:3000/"), 5000); // Thay đổi URL nếu cần
+        console.log("Test leave room: Passed");
+
+    } catch (e) {
+        console.log("Test leave room: Failed - " + e.message);
+    }
+}
 
 async function testJoinRoomWhenFull() {
     let driver2;
