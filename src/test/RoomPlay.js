@@ -17,6 +17,9 @@ export async function runCreateRoomTest() {
         await testCreatePrivateRoomSuccess(driver);
         await driver.sleep(3000);
         await testJoinPrivateRoom(driver, "password123");
+        await driver.sleep(2000);
+        await testCreatePublicRoomSuccess(driver);
+        await driver.sleep(4000);
 
     } catch (e) {
         console.error("Test execution failed - " + e.message);
@@ -91,6 +94,37 @@ async function testCreatePrivateRoomSuccess(driver) {
         console.log("Test create private room success: Failed - " + e.message);
     }
 }
+
+async function testCreatePublicRoomSuccess(driver) {
+    await driver.get("http://localhost:3000");
+    await runLoginTest(driver);
+    await resetCreateRoomForm(driver);
+    try {
+        await driver.findElement(By.xpath("/html/body/div[2]/div[3]/div/div[2]/div[1]/div/input")).sendKeys("Public Room");
+        await driver.sleep(2000);
+        let playersSlider = await driver.findElement(By.xpath("/html/body/div[2]/div[3]/div/div[2]/span[1]/span[21]"));
+        let action = driver.actions();
+        await driver.sleep(2000);
+        await action.move().dragAndDrop(playersSlider, { x: 0, y: 0 }).perform();
+        await driver.sleep(3000);
+
+// Select the number of rounds
+        let roundsSlider = await driver.findElement(By.xpath("/html/body/div[2]/div[3]/div/div[2]/span[2]/span[13]"));
+        action = driver.actions();  // Reinitialize the action object
+        await driver.sleep(2000);
+        await action.move().dragAndDrop(roundsSlider, { x: -160, y: 0 }).perform();
+        await driver.sleep(3000);
+
+        let createButton = await driver.findElement(By.xpath("/html/body/div[2]/div[3]/div/div[3]/button[2]/span[2]"));
+        await driver.executeScript("arguments[0].click();", createButton);
+        // Add assertions to verify room creation success
+        await driver.sleep(2000);
+        console.log("Test create public room success: Passed");
+    } catch (e) {
+        console.log("Test create public room success: Failed - " + e.message);
+    }
+}
+
 
 async function testJoinPrivateRoom(driver, password) {
     try {
