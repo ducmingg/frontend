@@ -23,7 +23,8 @@ export default function ChatWindow({ messagesList }) {
                   {message.content}
                 </p>
               );
-            } else if (message.type === "in") {
+            }
+            else if (message.type === "in") {
               return (
                 <p key={index} className="info-in msg-margin">
                   {message.user} has entered the room

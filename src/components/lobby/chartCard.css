@@ -3,36 +3,31 @@
     height: 150px;
     background: rgba(255, 255, 255, 0.3);
     align-items: center;
-}
-
-.chart-top {
+  }
+  
+  .chart-top {
     width: 150px;
     height: 100px;
     background: rgba(255, 255, 255, 0.9);
-}
-
-.chart-bar-section {
+  }
+  
+  .chart-bar-section {
     width: 60%;
     margin-top: 15px;
-}
-
-.chart-bar {
+  }
+  
+  .chart-bar {
     width: 100%;
-}
-
-.chart-border {
+  }
+  
+  .chart-border {
     border-radius: 20px;
-}
-
-.chart-card-title {
+  }
+  
+  .chart-card-title {
     color: rgb(150, 150, 150);
-}
-
-.chart-title {
-<<<<<<< HEAD
+  }
+  
+  .chart-title {
     color: rgb(150, 150, 150);
-}
-=======
-  color: rgb(150, 150, 150);
-}
->>>>>>> 1a44d9b64a2b535104ffc9ee87bd36d8ef16a35c
+  }

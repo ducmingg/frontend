@@ -67,48 +67,6 @@ export default function Login({ socket, handleLogin }) {
     socket.emit('login', username)
   }
 
-<<<<<<< HEAD
-    return (
-        <div className="card">
-            <div className="card--header ">
-                <div className="logo-bg lobby-title">
-                    <img src={logo} alt="logo"></img>
-                </div>
-                <p className='title'>Login</p>
-                {info===""? "" : <Alert severity="error">{info}</Alert>}
-            </div>
-            <div className="card--body">
-                <div>
-
-                    <label>Email/Username</label>
-                    <input
-                        value={emailUserName}
-                        type="text"
-                        onChange={e=>setEmail(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label>Password</label>
-                    <input
-                        value={password}
-                        type="password"
-                        onChange={e=>setPassword(e.target.value)}
-                    />
-                </div>
-            </div>
-            <button
-                type="submit"
-                id="signup"
-                className="btn_sign-up"
-                onClick={handleLoginButton} >
-                Login
-            </button>
-            <p className="link"><a onClick={handleNavToReg}>Register</a></p>
-        </div>
-    );
-}
-
-=======
   return (
     <Container component="main" maxWidth="xs" className="loginCard">
       {showWarning ? <Alert severity="error" className="margin_top">You enter the same nickname as the other player!</Alert> : ""}
@@ -134,4 +92,3 @@ export default function Login({ socket, handleLogin }) {
     </Container>
   );
 }
->>>>>>> 1a44d9b64a2b535104ffc9ee87bd36d8ef16a35c
