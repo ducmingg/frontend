@@ -54,6 +54,7 @@ export default function PublicRoomCard({ room, joinRoom }) {
         }
     }
 
+<<<<<<< HEAD
     return (
         <li>
             <div className="room-card flex" onClick={handleOpen}>
@@ -92,3 +93,18 @@ export default function PublicRoomCard({ room, joinRoom }) {
         </li>
     )
 }
+=======
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleJoinPrivateRoom} color="primary" autoFocus>
+            Enter
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </li>
+  )
+}
+>>>>>>> 1a44d9b64a2b535104ffc9ee87bd36d8ef16a35c

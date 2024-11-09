@@ -246,3 +246,7 @@ export default function CreateRoom({ socket, handleCreateRoom }) {
         </div>
     );
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1a44d9b64a2b535104ffc9ee87bd36d8ef16a35c

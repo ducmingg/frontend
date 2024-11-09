@@ -24,5 +24,26 @@ export default function ChartCard({ title, count, percentage }) {
                 </div>
             </div>
         </div>
+<<<<<<< HEAD
     )
 }
+=======
+        <div className="chart-card-title">{title}</div>
+      </div>
+      <div className="chart-bar-section flex">
+        <div className="chart-bar">
+          <ProgressBar
+            completed={percentage}
+            className="chart-rank-bar"
+            baseBgColor={"rgba(0, 0, 0, 0.3)"}
+            transitionDuration="1s"
+            bgColor={"rgba(255, 255, 255, 1)"}
+            labelColor="black"
+            height="12px"
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+>>>>>>> 1a44d9b64a2b535104ffc9ee87bd36d8ef16a35c

@@ -134,5 +134,23 @@ export default function Lobby({ socket, userName, rooms, isLogin }) {
                 <Statistics data={stats} />
             </div>
         </div>
+<<<<<<< HEAD
     );
 }
+=======
+        <div className="left-btm glass-blur flex flex-column">
+          <div className="room-banner flex">
+            <div className="room-type lobby-title text-title">{roomType} Rooms</div>
+          </div>
+          <CreateRoom socket={socket} handleCreateRoom={handleCreateRoom}></CreateRoom>
+          <RoomList rooms={rooms} joinRoom={handleJoinRoom} show={roomType}></RoomList>
+        </div>
+      </div>
+      <div className="right glass-blur flex flex-column">
+        <div className="stats-banner lobby-title text-title">Statistics</div>
+        <Statistics data={stats} />
+      </div>
+    </div>
+  );
+}
+>>>>>>> 1a44d9b64a2b535104ffc9ee87bd36d8ef16a35c

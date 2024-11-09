@@ -67,5 +67,12 @@ export default function Statistics({ data }) {
                 </div>
             </div>
         </div>
+<<<<<<< HEAD
     )
 }
+=======
+      </div>
+    </div>
+  )
+}
+>>>>>>> 1a44d9b64a2b535104ffc9ee87bd36d8ef16a35c

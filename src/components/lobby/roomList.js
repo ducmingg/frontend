@@ -14,6 +14,7 @@ export default function Public({ rooms, joinRoom, show }) {
         }
     }
 
+<<<<<<< HEAD
     return (
         <div className="room-list">
             {show !== "Private" &&
@@ -35,3 +36,26 @@ export default function Public({ rooms, joinRoom, show }) {
         </div>
     );
 }
+=======
+  return (
+    <div className="room-list">
+      {show !== "Private" &&
+        <ul>
+          {publicRooms.map((room) =>
+            <div onClick={() => joinRoom(room.roomID)}>
+              <PublicRoomCard room={room}></PublicRoomCard>
+            </div>
+          )}
+        </ul>
+      }
+      {show !== "Public" &&
+        <ul>
+          {privateRooms.map((room) =>
+            <PrivateRoomCard room={room} joinRoom={joinRoom}></PrivateRoomCard>
+          )}
+        </ul>
+      }
+    </div>
+  );
+}
+>>>>>>> 1a44d9b64a2b535104ffc9ee87bd36d8ef16a35c

@@ -166,5 +166,10 @@
 }
 
 .CircularProgressbar-text {
+<<<<<<< HEAD
     transform: translateX(-22%) translateY(8%);
 }
+=======
+  transform: translateX(-22%) translateY(8%);
+}
+>>>>>>> 1a44d9b64a2b535104ffc9ee87bd36d8ef16a35c

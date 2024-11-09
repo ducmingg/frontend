@@ -1,57 +1,73 @@
 import React from 'react';
-import { useHistory } from "react-router-dom";
+import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import './login.css'
+import Container from '@material-ui/core/Container';
 import Alert from '@material-ui/lab/Alert';
-import './login.css';
-import '../App.css';
-import logo from '../static/drawguesslogo.png';
+import {
+  useHistory
+} from "react-router-dom";
 import useSound from 'use-sound';
-import ClickonSfx from '../sounds/Clickon.wav';
+import ClickonSfx from '../../sounds/Clickon.wav';
 
-export default function Login({socket,handleLogin}) {
-    const [Clickon] = useSound(ClickonSfx);
-    const [password, setPassword] = React.useState("")
-    const [emailUserName, setEmail] = React.useState("")
-    const [info, setInfo] = React.useState("")
-    var  history= useHistory();
+const useStyles = makeStyles((theme) => ({
+  root: {
+    padding: '2px 4px',
+    display: 'flex',
+    alignItems: 'center',
+    width: 400,
+    '& > *': {
+      margin: theme.spacing(1),
+      width: 'x25ch',
+    },
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+  paper: {
+    marginTop: theme.spacing(18),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
 
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%',
+    marginTop: theme.spacing(1),
+  },
+}));
 
-    function handleLoginButton() {
-        Clickon();
-        const data = { password: password, flag: emailUserName }
-        if(password === ''|| emailUserName===''){
-            setInfo("Please Enter All Your Login Information!");
-        }
-        if(password !== '' && emailUserName!==''){
-            socket.emit('login', data)
-        }
-    }
+export default function Login({ socket, handleLogin }) {
+  const classes = useStyles();
+  const [Clickon] = useSound(ClickonSfx);
+  const [username, handleUsernameChange] = React.useState('')
+  const [showWarning, handleShowWarning] = React.useState(false)
+  const history = useHistory();
 
-    function handleNavToReg(){
-        Clickon();
-        history.push('/register')
-    }
+  React.useEffect(() => {
+    socket.on('loginSuccess', (data) => {
+      handleLogin(data.username, data.initdata)
+      history.push('/')
+    })
+  }, []);
 
-    React.useEffect(() => {
-        socket.on("loginFailed", (data) => {
-            if(data==="UserNotExists"){
-                setInfo("User Not Exists!")
-            }
-            else if(data==="passwordInvalid"){
-                setInfo("Password Invalid!")
-            }else if(data==="alreadyOnline"){
-                setInfo("Your Account Is Already Online!")
-            }
-        });
-    }, []);
+  React.useEffect(() => {
+    socket.on('loginFail', (data) => {
+      handleShowWarning(true)
+    })
+  }, []);
 
-    React.useEffect(() => {
-        socket.on('loginSuccess', (data) => {
-            handleLogin(data.userName, data.initdata)
-            localStorage.setItem("userName",data.userName)
-            history.push('/')
-        })
-    }, []);
+  function login() {
+    Clickon();
+    socket.emit('login', username)
+  }
 
+<<<<<<< HEAD
     return (
         <div className="card">
             <div className="card--header ">
@@ -92,3 +108,30 @@ export default function Login({socket,handleLogin}) {
     );
 }
 
+=======
+  return (
+    <Container component="main" maxWidth="xs" className="loginCard">
+      {showWarning ? <Alert severity="error" className="margin_top">You enter the same nickname as the other player!</Alert> : ""}
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        id="Please Enter Nickname"
+        label="Please Enter Nickname"
+        name="Please Enter Nickname"
+        autoComplete="Please Enter Nickname"
+        autoFocus
+        onChange={e => handleUsernameChange(e.target.value)} />
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+        onClick={login}>
+        PLAY!
+      </Button>
+    </Container>
+  );
+}
+>>>>>>> 1a44d9b64a2b535104ffc9ee87bd36d8ef16a35c
